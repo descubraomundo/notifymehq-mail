@@ -205,14 +205,20 @@ class MailGateway implements GatewayInterface
     {
         // If the notification is only a string, create it a email as the notification being the subject of the email
         if(!is_array($message)){
+            $original_message = $message;
             $message = array(
                 // Remove HTML tags and trim it to a max length of 75.
-                'subject' => substr(strip_tags($message),0,75).'...',
-                'body' => array(
-                    'html' => $message,
-                    'plain' => Html2Text::convert($message),
-                )
+                'subject' => substr(strip_tags($original_message),0,75).'...',
             );
+            //Checks is the message is a HTML message, and generate the plain text version of it.
+            if($this->isHtml($original_message)) {
+                $message['body'] = array(
+                    'html' => $original_message,
+                    'plain' => Html2Text::convert($original_message),
+                );
+            } else {
+                $message['body'] = $original_message;
+            }
         }
 
         // Merge and Overwrite configurations.
