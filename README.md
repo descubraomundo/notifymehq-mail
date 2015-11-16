@@ -3,9 +3,12 @@
 # NotifyMeHQ Mail
 An **UNOFFICIAL** Mail gateway for NotifyMeHQ as they "*intentionally removed mail support*" for NotifyMeHQ.
 
-If you want to keep the default contract of NotifyMeHQ `public function notify($to, $message);` with both parameters as a string, the expected behavior is to:
-  1. Set the subject of the email, as the $message content, but remove all HTML tags and limit to the size of 75 characters.
-  2. Set the body of the email, as the $message content it self with the full content and all HTML tags.
+If you want to keep the default contract of NotifyMeHQ `public function notify($to, $message);` with both parameters as a string, the expected behavior is:
+  1. The recipient of the email notificafion will not have his name on the recipients information, it will only be the email.
+  2. The subject of the email will be the first 75 characters of the `$message` content, but  all HTML tags will be removed.
+  3. The body of the email, will be the content of the `$message` it self with all the HTML tags.
+    * If the body of the email, is a HTML, it will automatically create a Plain text of it, formated just like the HTML, so it will reduce the SPAM score for that email.
+    * If the body has no HTML, it will be sent as plain text.
 
 Otherwise you can send the `$message` variable as an array with the desired configurations below.
 
