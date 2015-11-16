@@ -46,6 +46,12 @@ class MailFactory implements FactoryInterface
         // Create the Mailer using the created Transport.
         $mailer    = Swift_Mailer::newInstance($transport);
 
-        return new MailGateway($mailer, $config['from']);
+        unset($config['host']);
+        unset($config['port']);
+        unset($config['encryption']);
+        unset($config['username']);
+        unset($config['password']);
+
+        return new MailGateway($config, $mailer, $config['from']);
     }
 }

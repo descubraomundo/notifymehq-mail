@@ -13,7 +13,7 @@ namespace NotifyMeHQ\Mail;
 
 use NotifyMeHQ\Contracts\GatewayInterface;
 use NotifyMeHQ\NotifyMe\Response;
-use NotifyMeHQ\NotifyMe\Arr;
+use Html2Text\Html2Text;
 
 class MailGateway implements GatewayInterface
 {
@@ -39,8 +39,9 @@ class MailGateway implements GatewayInterface
      *
      * @return void
      */
-    public function __construct($mailer, $sender)
+    public function __construct($config, $mailer, $sender)
     {
+        $this->config = $config;
         $this->mailer = $mailer;
         $this->sender = $sender;
     }
@@ -49,21 +50,12 @@ class MailGateway implements GatewayInterface
      * Send a notification.
      *
      * @param string $to
-     * @param Array $message
+     * @param array $message
      *
      * @return \NotifyMeHQ\Contracts\ResponseInterface
      */
     public function notify($to, $message)
     {
-         // If $message is not an array, convert it so we can validate.
-        $message = is_array($message) ? $message : array($message);
-
-        // Required parameters to send an email.
-        Arr::requires($message, [
-            'subject',
-            'body',
-        ]);
-
         $notification = $this->processEmailProperties($to, $message);
 
         return $this->send($notification);
@@ -72,11 +64,11 @@ class MailGateway implements GatewayInterface
     /**
      * Send the notification over the wire.
      *
-     * @param Array $notification
+     * @param array $notification
      *
      * @return \NotifyMeHQ\Contracts\ResponseInterface
      */
-    protected function send(Array $notification)
+    protected function send($notification)
     {
         $success = false;
         $email   = $this->createEmail($notification);
@@ -97,11 +89,11 @@ class MailGateway implements GatewayInterface
 
     /**
      * Create the Email Notification.
-     * @param  Array  $emailProperties The properties that we should create the email with.
+     * @param  array  $emailProperties The properties that we should create the email with.
      *
      * @return Swift_Message The SwiftMailer Email Object.
      */
-    protected function createEmail(Array $emailProperties)
+    protected function createEmail($emailProperties)
     {
         // Create the Email Message
         $email   = \Swift_Message::newInstance();
@@ -145,7 +137,7 @@ class MailGateway implements GatewayInterface
     /**
      * Add all the recipients for the email correctly.
      *
-     * @param Array &$emailProperties All the emails properties
+     * @param array &$emailProperties All the emails properties
      * @param Swift_Message &$email The SwiftMailer Email Object.
      */
     protected function addRecipientsToEmail(&$emailProperties, &$email)
@@ -188,7 +180,7 @@ class MailGateway implements GatewayInterface
     /**
      * Configure the sender of the email correctly.
      *
-     * @param Array &$emailProperties All the emails properties
+     * @param array &$emailProperties All the emails properties
      * @param Swift_Message &$email The SwiftMailer Email Object.
      */
     protected function configureSender(&$emailProperties, &$email)
@@ -205,12 +197,26 @@ class MailGateway implements GatewayInterface
     /**
      * Process the email properties correctly to be able to correctly configure the SwiftMailer Email object.
      * @param  string|array $to To whom the notification should be sent.
-     * @param  Array $message All the email properties.
+     * @param  array $message All the email properties.
      *
      * @return array The array of all allowed properties for SwiftMailer Email object.
      */
-    protected function processEmailProperties($to, Array $message)
+    protected function processEmailProperties($to, $message)
     {
+        // If the notification is only a string, create it a email as the notification being the subject of the email
+        if(!is_array($message)){
+            $message = array(
+                // Remove HTML tags and trim it to a max length of 75.
+                'subject' => substr(strip_tags($message),0,75).'...',
+                'body' => array(
+                    'html' => $message,
+                    'plain' => Html2Text::convert($message),
+                )
+            );
+        }
+
+        // Merge and Overwrite configurations.
+        $message = array_merge($this->config, $message);
 
         $recipients          = $this->handleEmailRecipientsProperties($to);
         $body                = $this->handleEmailBodyProperties($message);
@@ -282,11 +288,11 @@ class MailGateway implements GatewayInterface
     /**
      * Handle all advanced email message configurations.
      *
-     * @param  Array $configs The advanced email message configurations.
+     * @param  array $configs The advanced email message configurations.
      *
-     * @return Array          The array with advanced configurations.
+     * @return array          The array with advanced configurations.
      */
-    protected function handleAdvancedEmailProperties(Array $configs)
+    protected function handleAdvancedEmailProperties($configs)
     {
         $advancedEmailProperties = [];
         if(empty($configs)) {
