@@ -11,7 +11,8 @@ Here is the list of all available configuration for your email.
 | Configuration | Required | Description |
 | ------------- | ------------- | ----------- |
 | host |**true**| Specify your SMTP Server Host. |
-| port |**true**| Specify your SMTP Server Port, check with your host. Eg: 25 or 465 or 2525. |
+| port |**true**| Specify your SMTP Server Port, check with your host. Eg: *25* or *465* or *2525*. |
+| encryption |**true**| Specify your SMTP Server Encryption, check with your host. Eg: *tls* or *ssl*. |
 | username |**true**| Specify your SMTP Server Username. |
 | password |**true**| Specify your SMTP Server Password. |
 

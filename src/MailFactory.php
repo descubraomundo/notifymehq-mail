@@ -30,9 +30,10 @@ class MailFactory implements FactoryInterface
         Arr::requires($config, [
             'host',
             'port',
+            'encryption',
             'username',
             'password',
-            'from'
+            'from',
         ]);
 
         // SwiftMailer Configuration
@@ -41,7 +42,7 @@ class MailFactory implements FactoryInterface
         $transport->setPort($config['port']);
         $transport->setUsername($config['username']);
         $transport->setPassword($config['password']);
-        $transport->setEncryption('tls');
+        $transport->setEncryption($config['encryption']);
         // Create the Mailer using the created Transport.
         $mailer    = Swift_Mailer::newInstance($transport);
 
