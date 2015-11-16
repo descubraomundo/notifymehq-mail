@@ -53,7 +53,7 @@ class MailGateway implements GatewayInterface
      *
      * @return \NotifyMeHQ\Contracts\ResponseInterface
      */
-    public function notify($to, Array $message)
+    public function notify($to, $message)
     {
          // If $message is not an array, convert it so we can validate.
         $message = is_array($message) ? $message : array($message);
@@ -194,7 +194,7 @@ class MailGateway implements GatewayInterface
     protected function configureSender(&$emailProperties, &$email)
     {
         // Allow FROM Overwrite
-        $sender = array_key_exists('from', $message) ? $message['from'] : $this->sender;
+        $sender = array_key_exists('from', $emailProperties) ? $emailProperties['from'] : $this->sender;
         //Check if there is a Name for the sender or it's only email, and configure correctly.
         if(is_array($sender)){
             $email->setFrom($sender[0],$sender[1]);
@@ -243,7 +243,10 @@ class MailGateway implements GatewayInterface
             $emailBodyProperties['body'] = $message['body'];
             // If the content of the Body is HTML but the user didn't specify
             // we mark it as a HTML email
-            if($this->isHtml($message['body'])){
+            if(
+               !is_array($emailBodyProperties['body']) &&
+               $this->isHtml($emailBodyProperties['body'])
+            ){
                 $emailBodyProperties['contentType'] = 'text/html';
             }
         }
