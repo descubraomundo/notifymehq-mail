@@ -134,8 +134,6 @@ This configuration takes an integer value between 1 and 5:
     echo $response->isSent() ? 'Message sent' : 'Message going nowhere';
 ```
 ## Todo
-
-- [X] Add docs
 - [ ] Add tests
 
 ## License
