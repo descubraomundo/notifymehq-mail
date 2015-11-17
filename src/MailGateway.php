@@ -204,21 +204,20 @@ class MailGateway implements GatewayInterface
     protected function processEmailProperties($to, $message)
     {
         // If the notification is only a string, create it a email as the notification being the subject of the email
-        if(!is_array($message)){
-            $original_message = $message;
+        $original_message = $message;
+        if(!is_array($original_message)){
             $message = array(
                 // Remove HTML tags and trim it to a max length of 75.
                 'subject' => substr(strip_tags($original_message),0,75).'...',
+                'body' => $original_message,
             );
-            //Checks is the message is a HTML message, and generate the plain text version of it.
-            if($this->isHtml($original_message)) {
-                $message['body'] = array(
-                    'html' => $original_message,
-                    'plain' => Html2Text::convert($original_message),
-                );
-            } else {
-                $message['body'] = $original_message;
-            }
+        }
+        // Checks if the user passed only a string for the body of the email.
+        if(!is_array($message['body'])){
+            $message['body'] = array(
+                'html' => $message['body'],
+                'plain' => Html2Text::convert($message['body']),
+            );
         }
 
         // Merge and Overwrite configurations.
@@ -260,6 +259,7 @@ class MailGateway implements GatewayInterface
                $this->isHtml($emailBodyProperties['body'])
             ){
                 $emailBodyProperties['contentType'] = 'text/html';
+
             }
         }
 
