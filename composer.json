@@ -11,21 +11,21 @@
     ],
     "require": {
         "php": ">=5.5.9",
+        "graham-campbell/manager": "~2.0",
         "swiftmailer/swiftmailer": "~5.4",
-        "notifymehq/notifyme": "~1.0",
-        "soundasleep/html2text": "~0.2"
+        "soundasleep/html2text": "~0.2",
+        "illuminate/contracts": "~5.0",
+        "illuminate/support": "~5.0",
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0"
     },
     "autoload": {
         "psr-4": {
-            "NotifyMeHQ\\Mail\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "NotifyMeHQ\\Mail\\Tests\\": "tests/"
+            "NotifyMeHQ\\NotifyMe\\": "notifyme/src/",
+            "NotifyMeHQ\\Contracts\\": "contracts/src/",
+            "NotifyMeHQ\\Laravel\\": "laravel/src/",
+            "NotifyMeHQ\\Mail\\": "mail/src/"
         }
     },
     "config": {
