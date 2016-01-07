@@ -22,10 +22,10 @@
     },
     "autoload": {
         "psr-4": {
-            "NotifyMeHQ\\NotifyMe\\": "notifyme/src/",
-            "NotifyMeHQ\\Contracts\\": "contracts/src/",
-            "NotifyMeHQ\\Laravel\\": "laravel/src/",
-            "NotifyMeHQ\\Mail\\": "mail/src/"
+            "NotifyMeHQ\\NotifyMe\\": "Notifyme/src/",
+            "NotifyMeHQ\\Contracts\\": "Contracts/src/",
+            "NotifyMeHQ\\Laravel\\": "Laravel/src/",
+            "NotifyMeHQ\\Mail\\": "Mail/src/"
         }
     },
     "config": {
