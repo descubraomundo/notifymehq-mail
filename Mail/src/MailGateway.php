@@ -215,6 +215,8 @@ class MailGateway implements GatewayInterface
         //Checks is the message is a HTML message, and generate the plain text version of it.
         $body = $message['body'];
         if (!is_array($body)) {
+            $body_encode = mb_detect_encoding($body);
+            $body  =  htmlspecialchars_decode(htmlentities($body, ENT_NOQUOTES, $body_encode), ENT_NOQUOTES);
             $message['body'] = array(
                 'html' => $body,
                 'plain' => Html2Text::convert($body),
