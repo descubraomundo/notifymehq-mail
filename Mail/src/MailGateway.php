@@ -289,7 +289,13 @@ class MailGateway implements GatewayInterface
             unset($recipients['bcc']);
         }
 
-        $recipientsProperties['to'] = $recipients;
+        // Checks if $recipients is an array and has the option to send a CC copy.
+        if(is_array($recipients) && array_key_exists('to', $recipients)){
+            $recipientsProperties['to'] = $recipients['to'];
+            unset($recipients['to']);
+        } else {
+            $recipientsProperties['to'] = $recipients;
+        }
 
         return $recipientsProperties;
     }
